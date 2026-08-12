@@ -1,0 +1,158 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   AI Transformation Advisor — design tokens
+   Premium B2B enterprise SaaS. Restrained, typographic, high-whitespace.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* Neutral spine */
+  --color-canvas: #fbfbfc;
+  --color-surface: #ffffff;
+  --color-line: #e7e9ee;
+  --color-line-strong: #d3d7e0;
+  --color-ink: #0e1116;
+  --color-ink-soft: #39424f;
+  --color-muted: #6c7686;
+  --color-faint: #9aa3b2;
+
+  /* Brand — deep petrol navy */
+  --color-brand-50: #f1f5f9;
+  --color-brand-100: #dde7f0;
+  --color-brand-200: #b9cbdd;
+  --color-brand-400: #3d6f9b;
+  --color-brand-600: #17527f;
+  --color-brand: #0f3557;
+  --color-brand-900: #0a2337;
+
+  /* Accent — teal, used only for data + affirmative states */
+  --color-accent-50: #eefaf8;
+  --color-accent-100: #d3f2ed;
+  --color-accent: #0e8f84;
+  --color-accent-700: #0a6d64;
+
+  /* Semantic — priority + complexity */
+  --color-high: #b4532a;
+  --color-high-bg: #fdf1ea;
+  --color-medium: #8a6d1f;
+  --color-medium-bg: #fbf5e4;
+  --color-low: #4b5563;
+  --color-low-bg: #f1f2f5;
+
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 2px rgba(14, 17, 22, 0.04), 0 1px 3px rgba(14, 17, 22, 0.03);
+  --shadow-lift:
+    0 2px 4px rgba(14, 17, 22, 0.04), 0 12px 28px -12px rgba(14, 17, 22, 0.16);
+  --shadow-panel: -24px 0 60px -24px rgba(14, 17, 22, 0.22);
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-panel-in: panel-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-scale-in: scale-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-sweep: sweep 1.6s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(320%); }
+}
+
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv11', 'ss01';
+  }
+
+  ::selection {
+    background-color: var(--color-brand-100);
+    color: var(--color-brand-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-400);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Display type — tight tracking is what makes it read as "enterprise" */
+  .display-1 {
+    font-size: clamp(2.5rem, 5.2vw, 4.1rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+  .display-2 {
+    font-size: clamp(1.85rem, 3.2vw, 2.65rem);
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    font-weight: 600;
+  }
+  .display-3 {
+    font-size: clamp(1.3rem, 2vw, 1.6rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+  }
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .numeral {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+
+  /* Faint blueprint grid used behind hero + handoff screens */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgba(15, 53, 87, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 53, 87, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
