@@ -8,6 +8,22 @@
       name="description"
       content="Understand how AI can transform your workforce, processes and operations — then turn the highest-value opportunities into AI workers."
     />
+
+    <!--
+      Unannounced product concept: keep this out of search results.
+      The link keeps working for anyone it is sent to; crawlers are asked not to
+      index the page or follow its links.
+
+      Note on robots.txt: it is intentionally NOT used here. Crawlers only read
+      robots.txt at the domain root (vanjakostic0505.github.io/robots.txt), which
+      a project page cannot write to — so a robots.txt shipped with this site
+      would be ignored and give false confidence. This meta tag is served with
+      the page itself and is the mechanism that actually works on GitHub Pages.
+
+      Remove this tag when the product goes public.
+    -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
