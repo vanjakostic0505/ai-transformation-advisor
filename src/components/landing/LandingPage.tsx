@@ -15,20 +15,22 @@ export function LandingPage() {
       <Positioning />
 
       <section className="bg-canvas">
-        <div className="mx-auto max-w-[1360px] px-5 py-20 text-center sm:px-8">
+        <div className="mx-auto max-w-[1360px] px-5 py-16 text-center sm:px-8">
           <h2 className="display-2 mx-auto max-w-2xl text-ink text-balance">
-            See where AI creates value in your business
+            See where AI might create value in your business
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[15.5px] leading-relaxed text-muted">
-            Answer six short sections about your company. Get a ranked
-            opportunity map, a target operating model and a recommended AI
-            workforce.
+          <p className="mx-auto mt-4 max-w-xl text-[15.5px] leading-relaxed text-muted text-pretty">
+            Answer six short sections about your company. You will get an
+            indicative opportunity map, a possible target operating model and
+            provisional AI worker concepts — with the assumptions behind every
+            figure on display.
           </p>
+
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button
               size="lg"
               onClick={() => actions.startAssessment()}
-              iconRight={<ArrowRight className="size-4.5" />}
+              iconRight={<ArrowRight aria-hidden className="size-4.5" />}
             >
               Start Your AI Assessment
             </Button>
@@ -37,7 +39,7 @@ export function LandingPage() {
               variant="secondary"
               onClick={() => actions.startAssessment({ prefill: false })}
             >
-              Start from a blank assessment
+              Start with a blank assessment
             </Button>
           </div>
         </div>

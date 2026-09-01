@@ -1,9 +1,17 @@
 import type { TransformationMap } from '../../types';
-import { Stat, Disclaimer, Button } from '../ui';
+import { Stat, Button, StatusLabel, PromiseBanner, ConfidenceMeter } from '../ui';
 import { ArrowRight } from '../ui/Icons';
 import { formatValueRange, formatNumber } from '../../utils/format';
 
-export function ResultsHeader({ map }: { map: TransformationMap }) {
+export function ResultsHeader({
+  map,
+  onValidate,
+  onExplorePilot,
+}: {
+  map: TransformationMap;
+  onValidate: () => void;
+  onExplorePilot: () => void;
+}) {
   const { summary, input } = map;
 
   return (
@@ -13,26 +21,36 @@ export function ResultsHeader({ map }: { map: TransformationMap }) {
         className="grid-field pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_60%_70%_at_20%_0%,black,transparent)]"
       />
 
-      <div className="relative mx-auto max-w-[1360px] px-5 py-14 sm:px-8 lg:py-18">
+      <div className="relative mx-auto max-w-[1360px] px-5 py-12 sm:px-8 lg:py-16">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="eyebrow animate-fade-up">
               {input.company.name} · {input.company.industry} ·{' '}
               {formatNumber(map.operatingModel.current.people)} employees
             </p>
+
             <h1
               className="display-1 mt-4 animate-fade-up text-ink text-balance"
               style={{ animationDelay: '60ms' }}
             >
               Your AI Transformation Map
             </h1>
+
+            <div
+              className="mt-4 flex animate-fade-up flex-wrap items-center gap-3"
+              style={{ animationDelay: '90ms' }}
+            >
+              <StatusLabel>Indicative first-pass assessment</StatusLabel>
+              <ConfidenceMeter confidence={summary.confidence} />
+            </div>
+
             <p
               className="mt-4 max-w-xl animate-fade-up text-[16px] leading-relaxed text-muted text-pretty"
               style={{ animationDelay: '110ms' }}
             >
-              Where AI creates measurable value in your operation, what the
-              target operating model looks like, and which AI workers to build
-              first.
+              Where AI might create value in your operation, what a target
+              operating model could look like, and which worker concepts are
+              worth investigating first.
             </p>
           </div>
 
@@ -41,62 +59,56 @@ export function ResultsHeader({ map }: { map: TransformationMap }) {
             style={{ animationDelay: '160ms' }}
           >
             <Button
-              onClick={() =>
-                document
-                  .getElementById('opportunities')
-                  ?.scrollIntoView({ behavior: 'smooth' })
-              }
-              iconRight={<ArrowRight className="size-4" />}
+              onClick={onValidate}
+              iconRight={<ArrowRight aria-hidden className="size-4" />}
             >
-              Review opportunities
+              Validate this opportunity map
             </Button>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                document
-                  .getElementById('roadmap')
-                  ?.scrollIntoView({ behavior: 'smooth' })
-              }
-            >
-              Open transformation roadmap
+            <Button variant="secondary" onClick={onExplorePilot}>
+              Explore a controlled pilot
             </Button>
           </div>
         </div>
 
+        <PromiseBanner className="mt-9 max-w-4xl" />
+
         <div
-          className="mt-12 grid animate-fade-up gap-4 sm:grid-cols-2 xl:grid-cols-5"
+          className="mt-6 grid animate-fade-up gap-4 sm:grid-cols-2 xl:grid-cols-5"
           style={{ animationDelay: '210ms' }}
         >
           <Stat
-            label="AI readiness score"
-            value={`${summary.readinessScore} / ${summary.readinessOutOf}`}
-            sub={summary.readinessBand}
+            label="Indicative AI readiness"
+            value={`${summary.readiness.score} / ${summary.readiness.outOf}`}
+            sub={summary.readiness.band}
+            status="Indicative"
             accent
           />
           <Stat
-            label="AI opportunities identified"
-            value={String(summary.opportunitiesIdentified)}
-            sub={`Top ${map.opportunities.length} shown below`}
+            label="Potential AI opportunities indicated"
+            value={String(summary.opportunitiesIndicated)}
+            sub={`Top ${map.opportunities.length} shown, provisionally ranked`}
+            status="Indicative"
           />
           <Stat
-            label="High-priority opportunities"
+            label="Provisionally high priority"
             value={String(summary.highPriorityOpportunities)}
-            sub="Sequenced into the first two waves"
+            sub="Ranking to be confirmed by expert validation"
+            status="Provisional"
           />
           <Stat
-            label="Recommended AI workers"
-            value={String(summary.recommendedWorkers)}
-            sub="Ready to configure in Smooth Operator"
+            label="Provisional AI worker concepts"
+            value={String(summary.workerConcepts)}
+            sub="Subject to discovery and pilot validation"
+            status="Provisional"
           />
           <Stat
-            label="Estimated annual value"
+            label="Indicative annual value"
             value={formatValueRange(summary.estimatedAnnualValue)}
-            sub="Sum of the high-priority opportunities"
+            sub="Sum of the high-priority estimates, before validation"
+            status="Indicative"
             accent
           />
         </div>
-
-        <Disclaimer className="mt-5 max-w-3xl">{summary.disclaimer}</Disclaimer>
       </div>
     </section>
   );

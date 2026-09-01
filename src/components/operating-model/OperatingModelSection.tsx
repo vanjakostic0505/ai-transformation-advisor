@@ -1,5 +1,5 @@
 import type { OperatingModel, OperatingModelSnapshot } from '../../types';
-import { SectionHeading } from '../ui';
+import { SectionHeading, StatusLabel } from '../ui';
 import { ArrowRight, Users } from '../ui/Icons';
 import { cn } from '../../utils/cn';
 
@@ -21,13 +21,9 @@ function ModelColumn({
           : 'border-line bg-surface',
       )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <p className={cn('eyebrow', isTarget && 'text-brand')}>{snapshot.label}</p>
-        {isTarget && (
-          <span className="rounded-md border border-accent/25 bg-accent-50 px-2 py-0.5 text-[10.5px] font-semibold tracking-[0.06em] text-accent-700 uppercase">
-            Recommended
-          </span>
-        )}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className={cn('eyebrow', isTarget && 'text-brand')}>{snapshot.label}</h3>
+        {isTarget && <StatusLabel tone="quiet">Indicative</StatusLabel>}
       </div>
 
       <dl className="mt-6 divide-y divide-line/80">
@@ -51,28 +47,38 @@ function ModelColumn({
 
 export function OperatingModelSection({ model }: { model: OperatingModel }) {
   return (
-    <section id="operating-model" className="scroll-mt-24 border-y border-line bg-surface">
-      <div className="mx-auto max-w-[1360px] px-5 py-18 sm:px-8 lg:py-22">
+    <section
+      id="operating-model"
+      className="scroll-mt-24 border-y border-line bg-surface"
+    >
+      <div className="mx-auto max-w-[1360px] px-5 py-16 sm:px-8 lg:py-20">
         <SectionHeading
-          eyebrow="Target operating model"
-          title="Your Future AI Operating Model"
-          description="The same people, working differently. AI absorbs the repeatable volume; your team keeps judgement, exceptions and the customer relationship."
+          eyebrow="Possible target operating model"
+          title="What the same organisation could look like"
+          description="The same people, working differently. AI absorbs repeatable volume; your team keeps judgement, exceptions and the customer relationship. Which parts of this are achievable, and in what order, is a question for discovery."
         />
 
-        <div className="relative mt-10 grid gap-5 lg:grid-cols-[1fr_auto_1fr] lg:items-stretch lg:gap-6">
+        <div className="mt-6">
+          <StatusLabel>Indicative — requires validation</StatusLabel>
+        </div>
+
+        <div className="relative mt-8 grid gap-5 lg:grid-cols-[1fr_auto_1fr] lg:items-stretch lg:gap-6">
           <ModelColumn snapshot={model.current} variant="current" />
 
-          <div className="flex items-center justify-center lg:px-2">
+          <div aria-hidden className="flex items-center justify-center lg:px-2">
             <span className="flex size-10 items-center justify-center rounded-full border border-line bg-canvas text-brand-400">
-              <ArrowRight className="size-5 lg:block" />
+              <ArrowRight className="size-5" />
             </span>
           </div>
 
           <ModelColumn snapshot={model.target} variant="target" />
         </div>
 
-        <div className="mt-8 flex items-start gap-3.5 rounded-[14px] border border-accent/20 bg-accent-50/60 p-5 sm:p-6">
-          <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface text-accent-700">
+        <div className="mt-8 flex items-start gap-3.5 rounded-[14px] border border-accent/25 bg-accent-50/60 p-5 sm:p-6">
+          <span
+            aria-hidden
+            className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface text-accent-700"
+          >
             <Users className="size-4" />
           </span>
           <div>

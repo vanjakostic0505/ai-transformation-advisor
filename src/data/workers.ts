@@ -1,27 +1,26 @@
 import type { AIWorker } from '../types';
 
-const EUR = (low: number, high: number) => ({
-  currency: '€',
-  low,
-  high,
-  period: 'per year',
-});
+/** Value and confidence are derived from the source opportunities by the engine. */
+export type WorkerSeed = Omit<AIWorker, 'value' | 'confidence'>;
 
 /**
- * The recommended AI workforce. Each worker delivers one or more opportunities
- * from `opportunities.ts` — the link is kept in `sourceOpportunityIds` so the
- * value figures on this screen always reconcile with the opportunity map.
+ * Provisional AI worker concepts.
  *
- * Combined value: €390K–€590K (a subset of the €480K–€720K high-priority pool;
- * the remaining opportunities are sequenced into later waves).
+ * These are concepts, not specifications. Each one describes a shape of work
+ * that the opportunity analysis suggests could be delegated — what it would
+ * actually do, what it must never do, and what has to be true before it could
+ * become a controlled pilot.
+ *
+ * Nothing here is ready to build. The `pilotPrerequisites` on each concept are
+ * the honest gap between an indicative assessment and a deployable design.
  */
-export const WORKERS: AIWorker[] = [
+export const WORKER_SEEDS: WorkerSeed[] = [
   {
     id: 'worker-customer-operations',
     name: 'Customer Operations Worker',
     role: 'Front-line ticket handling and customer correspondence',
     description:
-      'Works the ticket queue alongside your Customer Operations team. Classifies, researches and drafts — a human sends.',
+      'Would work the ticket queue alongside your Customer Operations team: classifying, researching and drafting, with a person sending.',
     handles: [
       'Ticket triage',
       'Customer responses',
@@ -29,20 +28,26 @@ export const WORKERS: AIWorker[] = [
       'Case summaries',
       'Escalation detection',
     ],
-    systems: ['Salesforce', 'Zendesk', 'Knowledge Base', 'Email'],
-    value: EUR(180, 260),
+    systems: ['Salesforce', 'Zendesk', 'Knowledge base', 'Email'],
     complexity: 'MEDIUM',
     oversight: 'MEDIUM',
     humanInTheLoop: [
-      'Agent reviews and sends every customer-facing reply in the first phase',
-      'Automatic escalation on low confidence or detected dissatisfaction',
+      'An agent reviews and sends every customer-facing reply in the first phase',
+      'Automatic escalation on low confidence, or on detected dissatisfaction',
       'No commitments on price, contract or compensation',
     ],
     successMetrics: [
       'First response time',
       'Share of tickets resolved without escalation',
       'Draft acceptance rate',
-      'CSAT held flat or better',
+      'Customer satisfaction held flat or better',
+    ],
+    pilotPrerequisites: [
+      'A measured baseline for handling time and first response time',
+      'A named process owner in Customer Operations who can approve the scope',
+      'Agreement on which ticket types are in scope for the pilot',
+      'Data and security review of Salesforce and Zendesk access',
+      'A defined stopping rule: what result would end the pilot',
     ],
     sourceOpportunityIds: ['opp-customer-service'],
   },
@@ -51,7 +56,7 @@ export const WORKERS: AIWorker[] = [
     name: 'Email Operations Worker',
     role: 'Shared inbox triage, routing and structured capture',
     description:
-      'Reads the shared inboxes, decides what each message is, routes it and writes the record into the CRM. The fastest route to a first production deployment.',
+      'Would read the shared inboxes, decide what each message is, route it and write the record into the CRM. On the evidence available, the least complex candidate for a first pilot.',
     handles: [
       'Inbox triage',
       'Intent and urgency classification',
@@ -60,18 +65,23 @@ export const WORKERS: AIWorker[] = [
       'Standard reply drafting',
     ],
     systems: ['Microsoft 365', 'Salesforce', 'Zendesk'],
-    value: EUR(90, 140),
     complexity: 'LOW',
     oversight: 'LOW',
     humanInTheLoop: [
-      'Owner review of routing rules weekly',
+      'An owner reviews routing rules weekly',
       'Low-confidence messages go to a human queue',
-      'Sensitive senders are never auto-handled',
+      'Sensitive senders are never handled automatically',
     ],
     successMetrics: [
-      'Time-to-route',
-      'Routing accuracy vs. human baseline',
+      'Time to route',
+      'Routing accuracy against the human baseline',
       'Manual re-keying hours removed',
+    ],
+    pilotPrerequisites: [
+      'A measured baseline for current routing time and accuracy',
+      'An agreed list of senders and topics excluded from automation',
+      'Microsoft 365 access scope approved by IT and Security',
+      'A named owner for the routing rules',
     ],
     sourceOpportunityIds: ['opp-email-operations'],
   },
@@ -80,27 +90,32 @@ export const WORKERS: AIWorker[] = [
     name: 'Knowledge Worker',
     role: 'Retrieval, citation and knowledge upkeep across systems',
     description:
-      'Answers internal questions with citations, and keeps your procedures honest by flagging content that has gone stale or contradicts itself.',
+      'Would answer internal questions with citations, and keep procedures honest by flagging content that has gone stale or contradicts itself.',
     handles: [
       'Cross-system retrieval',
       'Cited answers for staff',
       'Procedure summarisation',
-      'Stale and conflicting content detection',
+      'Detection of stale and conflicting content',
       'Onboarding support',
     ],
     systems: ['Microsoft 365 / SharePoint', 'Zendesk', 'Jira'],
-    value: EUR(70, 110),
     complexity: 'MEDIUM',
     oversight: 'MEDIUM',
     humanInTheLoop: [
       'Named content owners approve published procedures',
-      'Answers always carry sources so staff can verify',
-      'No external-facing answers in phase one',
+      'Answers always carry sources, so staff can verify them',
+      'No externally facing answers in the first phase',
     ],
     successMetrics: [
       'Search-to-answer time',
       'Answer usefulness rating',
-      'Time-to-productivity for new joiners',
+      'Time to productivity for new joiners',
+    ],
+    pilotPrerequisites: [
+      'A content audit: what is current, owned and non-contradictory',
+      'Document-level access rules agreed with Security before indexing',
+      'Named content owners for each knowledge domain in scope',
+      'A measured baseline for how long staff currently spend searching',
     ],
     sourceOpportunityIds: ['opp-knowledge-management'],
   },
@@ -109,26 +124,31 @@ export const WORKERS: AIWorker[] = [
     name: 'Quality Assurance Worker',
     role: 'Full-coverage case review against your quality criteria',
     description:
-      'Replaces sampling with complete coverage. Reviews every case, scores it consistently and escalates only what looks wrong.',
+      'Would replace sampling with complete coverage: reviewing every case, scoring it consistently and escalating only what looks wrong.',
     handles: [
-      '100% case review',
+      'Full case review',
       'Consistent scoring',
-      'At-risk case flagging',
+      'Flagging of at-risk cases',
       'Trend and root-cause reporting',
     ],
     systems: ['Zendesk', 'Salesforce'],
-    value: EUR(50, 80),
     complexity: 'LOW',
     oversight: 'LOW',
     humanInTheLoop: [
       'Quality criteria are defined and owned by team leads',
       'Scores are advisory input to coaching, never automated performance action',
-      'Agents can dispute any score',
+      'Any agent can dispute any score',
     ],
     successMetrics: [
       'Review coverage',
-      'Scoring consistency vs. human reviewers',
+      'Scoring consistency against human reviewers',
       'Repeat-defect rate',
+    ],
+    pilotPrerequisites: [
+      'Written quality criteria that reviewers already agree on',
+      'Consultation with HR, and any works council, on the use of AI scoring',
+      'A measured baseline for current inter-reviewer variance',
+      'An agreed dispute route for contested scores',
     ],
     sourceOpportunityIds: ['opp-quality-assurance'],
   },

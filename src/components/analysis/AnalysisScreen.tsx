@@ -1,14 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useAdvisor } from '../../state/AdvisorProvider';
+import { StatusLabel } from '../ui';
 import { Check } from '../ui/Icons';
 import { cn } from '../../utils/cn';
 
 const STAGES = [
-  { label: 'Workforce structure', detail: 'Mapping headcount to functional workload' },
-  { label: 'Operational workflows', detail: 'Identifying repeatable, rule-bounded work' },
-  { label: 'Technology environment', detail: 'Assessing systems of record and integration surface' },
-  { label: 'AI opportunities', detail: 'Matching work patterns to AI capability' },
-  { label: 'Potential business impact', detail: 'Estimating value ranges against your objectives' },
+  {
+    label: 'Workforce structure',
+    detail: 'Mapping the headcount you gave us to functional workload',
+  },
+  {
+    label: 'Operational workflows',
+    detail: 'Looking for repeatable, rule-bounded work',
+  },
+  {
+    label: 'Technology environment',
+    detail: 'Noting the systems of record an AI worker would need',
+  },
+  {
+    label: 'Potential AI opportunities',
+    detail: 'Matching work patterns to AI capability',
+  },
+  {
+    label: 'Indicative value ranges',
+    detail: 'Applying illustrative sector assumptions to your scale',
+  },
 ];
 
 const STAGE_MS = 780;
@@ -42,7 +58,7 @@ export function AnalysisScreen() {
       <div className="relative w-full max-w-lg">
         <p className="eyebrow">AI Advisor</p>
         <h1 className="display-2 mt-3 text-ink text-balance">
-          Analyzing your operating model
+          Building your indicative map
         </h1>
         <p className="mt-3 text-[14.5px] leading-relaxed text-muted">
           {input.company.name || 'Your company'} ·{' '}
@@ -50,7 +66,18 @@ export function AnalysisScreen() {
           {input.workforce.units.length} functions
         </p>
 
-        <div className="mt-8 h-1 w-full overflow-hidden rounded-full bg-line">
+        <div className="mt-4">
+          <StatusLabel>Indicative — requires validation</StatusLabel>
+        </div>
+
+        <div
+          className="mt-8 h-1 w-full overflow-hidden rounded-full bg-line"
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Analysis progress"
+        >
           <div
             className="h-full rounded-full bg-brand transition-all duration-700 ease-out"
             style={{ width: `${progress}%` }}
@@ -67,10 +94,11 @@ export function AnalysisScreen() {
                 className={cn(
                   'flex items-start gap-3 rounded-xl px-3 py-3 transition-all duration-400',
                   active && 'bg-surface shadow-card',
-                  !done && !active && 'opacity-35',
+                  !done && !active && 'opacity-45',
                 )}
               >
                 <span
+                  aria-hidden
                   className={cn(
                     'mt-px flex size-5 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
                     done
@@ -91,7 +119,7 @@ export function AnalysisScreen() {
                   <span
                     className={cn(
                       'block text-[14.5px] leading-snug font-medium transition-colors',
-                      done ? 'text-ink' : active ? 'text-ink' : 'text-muted',
+                      done || active ? 'text-ink' : 'text-muted',
                     )}
                   >
                     {stage.label}
@@ -107,11 +135,11 @@ export function AnalysisScreen() {
           })}
         </ul>
 
-        {completed >= STAGES.length && (
-          <p className="mt-8 animate-fade-in text-[13px] text-muted">
-            Assembling your AI Transformation Map…
-          </p>
-        )}
+        <p className="mt-8 text-[13px] text-muted" aria-live="polite">
+          {completed >= STAGES.length
+            ? 'Assembling your indicative opportunity map…'
+            : ' '}
+        </p>
       </div>
     </div>
   );

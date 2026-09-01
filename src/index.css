@@ -16,8 +16,19 @@
   --color-line-strong: #d3d7e0;
   --color-ink: #0e1116;
   --color-ink-soft: #39424f;
-  --color-muted: #6c7686;
-  --color-faint: #9aa3b2;
+  /*
+   * Contrast on the white/canvas background, measured rather than eyeballed:
+   *   ink       19.1:1
+   *   ink-soft   9.7:1
+   *   muted      5.9:1
+   *   faint      4.8:1
+   * The two grey tones were previously 4.4:1 and 2.6:1. `faint` in particular
+   * was used for disclaimers and helper text — exactly the copy that must be
+   * readable — so both were darkened to clear WCAG AA (4.5:1) for body text
+   * while keeping the visual hierarchy between them.
+   */
+  --color-muted: #5c6575;
+  --color-faint: #6a7385;
 
   /* Brand — deep petrol navy */
   --color-brand-50: #f1f5f9;
@@ -98,10 +109,21 @@
     color: var(--color-brand-900);
   }
 
+  /*
+   * A single, always-visible focus style. Keyboard users need to be able to
+   * see where they are at every step of a six-screen flow; 3px against the
+   * brand navy is visible on white, on the canvas tint and on the brand-50
+   * panels without needing a per-component override.
+   */
   :focus-visible {
-    outline: 2px solid var(--color-brand-400);
+    outline: 3px solid var(--color-brand);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  /* On dark sections the navy outline would disappear. */
+  .on-dark :focus-visible {
+    outline-color: #ffffff;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Button } from '../ui';
+import { Button, PromiseBanner } from '../ui';
 import { ArrowRight } from '../ui/Icons';
 import { JourneyRail } from './JourneyRail';
 import { useAdvisorActions } from '../../state/AdvisorProvider';
@@ -17,7 +17,7 @@ export function Hero() {
         className="pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-brand-100/35 blur-[110px]"
       />
 
-      <div className="relative mx-auto max-w-[1360px] px-5 pt-16 pb-20 sm:px-8 lg:pt-24 lg:pb-28">
+      <div className="relative mx-auto max-w-[1360px] px-5 pt-14 pb-16 sm:px-8 lg:pt-20 lg:pb-24">
         <div className="max-w-3xl">
           <p className="eyebrow animate-fade-up">
             From your current workforce to your AI workforce
@@ -34,9 +34,9 @@ export function Hero() {
             className="mt-6 max-w-2xl animate-fade-up text-[17px] leading-relaxed text-ink-soft text-pretty sm:text-[18.5px]"
             style={{ animationDelay: '120ms' }}
           >
-            Understand how AI can transform your workforce, processes and
-            operations — then turn the highest-value opportunities into AI
-            workers.
+            Understand where AI could transform your workforce, processes and
+            operations — and see the assumptions behind every figure, so the
+            highest-value opportunities can be validated rather than assumed.
           </p>
 
           <div
@@ -46,7 +46,7 @@ export function Hero() {
             <Button
               size="lg"
               onClick={() => actions.startAssessment()}
-              iconRight={<ArrowRight className="size-4.5" />}
+              iconRight={<ArrowRight aria-hidden className="size-4.5" />}
             >
               Start Your AI Assessment
             </Button>
@@ -64,7 +64,7 @@ export function Hero() {
           </div>
 
           <p
-            className="mt-6 animate-fade-up text-[13px] text-faint"
+            className="mt-6 animate-fade-up text-[13px] text-muted"
             style={{ animationDelay: '240ms' }}
           >
             Takes 5–10 minutes · No integration required · Pre-filled with a
@@ -72,17 +72,21 @@ export function Hero() {
           </p>
         </div>
 
-        <div className="mt-16 lg:mt-20">
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <p className="eyebrow">The journey</p>
-            <p className="hidden text-[12.5px] text-faint sm:block">
+        <div
+          className="mt-10 max-w-4xl animate-fade-up"
+          style={{ animationDelay: '280ms' }}
+        >
+          <PromiseBanner />
+        </div>
+
+        <div className="mt-14 lg:mt-16">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+            <p className="eyebrow">The journey this sits at the front of</p>
+            <p className="text-[12.5px] text-muted">
               From AI strategy to measurable execution.
             </p>
           </div>
           <JourneyRail />
-          <p className="mt-5 text-[12.5px] text-faint sm:hidden">
-            From AI strategy to measurable execution.
-          </p>
         </div>
       </div>
     </section>

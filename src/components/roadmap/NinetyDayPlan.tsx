@@ -1,8 +1,15 @@
 import type { TransformationRoadmap } from '../../types';
+import { StatusLabel } from '../ui';
 import { cn } from '../../utils/cn';
 
 const MARKS = [0, 30, 60, 90];
 
+/**
+ * The 90-day rail is an illustration of how this work usually orders itself,
+ * not a delivery commitment. Phases that genuinely sit beyond 90 days are
+ * listed separately rather than compressed onto the rail to make the timeline
+ * look shorter than it is.
+ */
 export function NinetyDayPlan({
   roadmap,
   activeIndex,
@@ -12,15 +19,20 @@ export function NinetyDayPlan({
   activeIndex: number | null;
   onHover: (index: number | null) => void;
 }) {
+  const onRail = roadmap.phases.filter(
+    (p) => p.startPct !== null && p.endPct !== null,
+  );
+  const beyond = roadmap.phases.filter((p) => p.beyondNinetyDays);
+
   return (
-    <div className="rounded-[14px] border border-line bg-surface p-6 sm:p-7">
-      <div className="flex items-baseline justify-between">
+    <div className="rounded-[14px] border border-line bg-surface p-5 sm:p-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="eyebrow">{roadmap.horizonLabel}</p>
-        <p className="text-[12.5px] text-faint">Indicative sequencing</p>
+        <StatusLabel tone="quiet">Illustrative sequencing</StatusLabel>
       </div>
 
       {/* Day scale */}
-      <div className="relative mt-6 mb-2 hidden h-4 sm:block">
+      <div aria-hidden className="relative mt-6 mb-2 hidden h-4 sm:block">
         {MARKS.map((m) => (
           <span
             key={m}
@@ -33,7 +45,6 @@ export function NinetyDayPlan({
       </div>
 
       <div className="relative space-y-2.5">
-        {/* gridlines */}
         <div aria-hidden className="pointer-events-none absolute inset-0 hidden sm:block">
           {MARKS.slice(1, -1).map((m) => (
             <span
@@ -44,9 +55,14 @@ export function NinetyDayPlan({
           ))}
         </div>
 
-        {roadmap.phases.map((phase, i) => {
+        {onRail.map((phase) => {
+          const i = roadmap.phases.indexOf(phase);
           const active = activeIndex === i;
           const dimmed = activeIndex !== null && !active;
+          const barTone = active
+            ? 'border-brand bg-brand text-white shadow-lift'
+            : 'border-brand-200 bg-brand-50/70 text-brand-900';
+
           return (
             <div
               key={phase.id}
@@ -54,18 +70,16 @@ export function NinetyDayPlan({
               onMouseLeave={() => onHover(null)}
               className="relative h-9"
             >
-              {/* mobile: full-width bar with the date window inline */}
+              {/* Mobile: full-width bar with the window inline */}
               <div
                 className={cn(
                   'absolute inset-y-0 left-0 flex w-full items-center rounded-lg border px-3 transition-all duration-250 sm:hidden',
-                  active
-                    ? 'border-brand bg-brand text-white shadow-lift'
-                    : 'border-brand-200 bg-brand-50/70 text-brand-900',
-                  dimmed && 'opacity-45',
+                  barTone,
+                  dimmed && 'opacity-50',
                 )}
               >
-                <span className="numeral mr-2 text-[11px] font-semibold opacity-55">
-                  0{phase.index}
+                <span className="numeral mr-2 text-[11px] font-semibold opacity-60">
+                  {phase.index}
                 </span>
                 <span className="truncate text-[13px] font-semibold tracking-[-0.015em]">
                   {phase.name}
@@ -73,29 +87,28 @@ export function NinetyDayPlan({
                 <span
                   className={cn(
                     'ml-auto shrink-0 pl-2 text-[11.5px]',
-                    active ? 'text-white/65' : 'text-brand-400',
+                    active ? 'text-white/70' : 'text-brand-400',
                   )}
                 >
                   {phase.window}
                 </span>
               </div>
 
-              {/* desktop: bar positioned on the 90-day scale */}
+              {/* Desktop: bar positioned on the 90-day scale */}
               <div
+                aria-hidden
                 className={cn(
                   'absolute inset-y-0 hidden items-center rounded-lg border px-3 transition-all duration-250 sm:flex',
-                  active
-                    ? 'border-brand bg-brand text-white shadow-lift'
-                    : 'border-brand-200 bg-brand-50/70 text-brand-900',
-                  dimmed && 'opacity-45',
+                  barTone,
+                  dimmed && 'opacity-50',
                 )}
                 style={{
                   left: `${phase.startPct}%`,
-                  width: `${phase.endPct - phase.startPct}%`,
+                  width: `${(phase.endPct ?? 0) - (phase.startPct ?? 0)}%`,
                 }}
               >
-                <span className="numeral mr-2 text-[11px] font-semibold opacity-55">
-                  0{phase.index}
+                <span className="numeral mr-2 text-[11px] font-semibold opacity-60">
+                  {phase.index}
                 </span>
                 <span className="truncate text-[13px] font-semibold tracking-[-0.015em]">
                   {phase.name}
@@ -105,6 +118,36 @@ export function NinetyDayPlan({
           );
         })}
       </div>
+
+      {beyond.length > 0 && (
+        <div className="mt-5 border-t border-dashed border-line-strong pt-4">
+          <p className="text-[11.5px] font-semibold tracking-[0.06em] text-faint uppercase">
+            Beyond 90 days
+          </p>
+          <ul className="mt-2.5 flex flex-wrap gap-2">
+            {beyond.map((phase) => (
+              <li
+                key={phase.id}
+                onMouseEnter={() => onHover(roadmap.phases.indexOf(phase))}
+                onMouseLeave={() => onHover(null)}
+                className={cn(
+                  'rounded-lg border border-dashed px-3 py-2 text-[12.5px] font-medium transition-colors',
+                  activeIndex === roadmap.phases.indexOf(phase)
+                    ? 'border-brand bg-brand-50 text-brand'
+                    : 'border-line-strong bg-canvas text-muted',
+                )}
+              >
+                <span className="numeral mr-1.5 opacity-70">{phase.index}</span>
+                {phase.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <p className="mt-5 border-t border-line pt-4 text-[12.5px] leading-relaxed text-muted text-pretty">
+        {roadmap.horizonCaveat}
+      </p>
     </div>
   );
 }
